@@ -1,0 +1,9 @@
+{
+  "name": "@signed/prettier-config",
+  "version": "0.1.0",
+  "description": "Personal Prettier config",
+  "homepage": "https://github.com/signed/configuration",
+  "repository": "https://github.com/signed/configuration.git",
+  "main": "index.json",
+  "license": "MIT"
+}
