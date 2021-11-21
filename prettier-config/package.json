@@ -5,5 +5,9 @@
   "homepage": "https://github.com/signed/configuration",
   "repository": "https://github.com/signed/configuration.git",
   "main": "index.json",
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "README.md",
+    "index.json"
+  ]
 }
