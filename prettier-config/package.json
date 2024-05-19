@@ -1,14 +1,27 @@
 {
   "packageManager": "pnpm@9.1.1",
   "name": "@signed/prettier-config",
-  "version": "0.1.0",
+  "version": "0.0.2-alpha.3",
   "description": "Personal Prettier config",
   "homepage": "https://github.com/signed/configuration",
-  "repository": "https://github.com/signed/configuration.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/signed/configuration.git",
+    "directory": "prettier-config"
+  },
   "main": "index.json",
   "license": "MIT",
   "files": [
     "README.md",
     "index.json"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "release-it": "release-it --config .release-it.cjs"
+  },
+  "devDependencies": {
+    "release-it": "17.2.1"
+  }
 }

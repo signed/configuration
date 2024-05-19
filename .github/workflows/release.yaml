@@ -1,0 +1,74 @@
+# trigger build 4
+# sample https://github.com/JoshuaKGoldberg/create-typescript-app/blob/f12451821d64b6e3ac00d0d1fdc307d4c992e162/.github/workflows/release.yml#L16-L18
+name: ManualRelease
+concurrency:
+  group: ${{ github.workflow }} # only run a single release job at a time
+
+defaults:
+  run:
+    working-directory: prettier-config
+on:
+  workflow_dispatch:
+    inputs:
+      Release:
+        description: 'Release'
+        required: true
+        default: 'next'
+        type: choice
+        options:
+          - next
+          - start-beta
+          - continue-beta
+      Increment:
+        description: 'Semver Increment'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - minor
+          - patch
+          - major
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: prettier-config/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          # cache: pnpm
+          node-version: 20
+
+      - run: pnpm install --frozen-lockfile
+        shell: bash
+
+      - name: Setup Git User
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_TRIGGERING_ACTOR}@users.noreply.github.com"
+
+      - run: pnpm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Start Beta-Release
+        if: github.event.inputs.Release == 'start-beta'
+        run: pnpm run release-it ${{ github.event.inputs.Increment }} --preRelease=beta --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Continue Beta-Release
+        if: github.event.inputs.Release == 'continue-beta'
+        run: pnpm run release-it --preRelease --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Next Release
+        if: github.event.inputs.Release == 'next'
+        run: pnpm run release-it --increment ${{ github.event.inputs.Increment }} --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
