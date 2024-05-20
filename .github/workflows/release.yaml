@@ -1,4 +1,3 @@
-# trigger build 4
 # sample https://github.com/JoshuaKGoldberg/create-typescript-app/blob/f12451821d64b6e3ac00d0d1fdc307d4c992e162/.github/workflows/release.yml#L16-L18
 name: ManualRelease
 concurrency:
@@ -6,6 +5,8 @@ concurrency:
 
 permissions:
   contents: write # allow to push the updated package.json
+
+run-name: Release ${{ inputs.Release }} as ${{ inputs.Increment }} (${{ inputs.DryRun }})
 
 defaults:
   run:
