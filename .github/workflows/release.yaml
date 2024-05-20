@@ -31,7 +31,7 @@ on:
       DryRun:
         description: 'Dry Run'
         required: true
-        default: ''
+        default: '--dry-run --release-version'
         type: choice
         options:
           - ''
