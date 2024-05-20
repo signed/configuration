@@ -2,7 +2,7 @@
   "packageManager": "pnpm@9.1.1",
   "type": "module",
   "name": "@signed/prettier-config",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.0",
   "description": "Personal Prettier config",
   "homepage": "https://github.com/signed/configuration",
   "repository": {
