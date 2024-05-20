@@ -1,5 +1,6 @@
 {
   "packageManager": "pnpm@9.1.1",
+  "type": "module",
   "name": "@signed/prettier-config",
   "version": "0.1.0",
   "description": "Personal Prettier config",
@@ -9,11 +10,11 @@
     "url": "git+https://github.com/signed/configuration.git",
     "directory": "prettier-config"
   },
-  "main": "index.json",
+  "main": "prettier.config.mjs",
   "license": "MIT",
   "files": [
     "README.md",
-    "index.json"
+    "prettier.config.mjs"
   ],
   "publishConfig": {
     "access": "public"
