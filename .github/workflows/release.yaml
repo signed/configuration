@@ -7,6 +7,8 @@ permissions:
   contents: write # allow to push the updated package.json
 
 run-name: Release ${{ inputs.Release }} as ${{ inputs.Increment }} (${{ inputs.DryRun }})
+env:
+  DRY_RUN_ARGUMENTS: ${{ github.ref == 'refs/heads/main' && 'value_for_main_branch' || 'value_for_other_branches' }}
 
 defaults:
   run:
@@ -68,24 +70,24 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Start Beta-Release
-        if: github.event.inputs.Release == 'start-beta'
-        run: pnpm run release-it ${{ github.event.inputs.Increment }} --preRelease=beta --ci ${{ github.event.inputs.DryRun }}
+        if: inputs.Release == 'start-beta'
+        run: pnpm run release-it ${{ inputs.Increment }} --preRelease=beta --ci ${{ inputs.DryRun }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Continue Beta-Release
-        if: github.event.inputs.Release == 'continue-beta'
-        run: pnpm run release-it --preRelease --ci ${{ github.event.inputs.DryRun }}
+        if: inputs.Release == 'continue-beta'
+        run: pnpm run release-it --preRelease --ci ${{ inputs.DryRun }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Next Release
-        if: github.event.inputs.Release == 'next'
-        run: pnpm run release-it --increment ${{ github.event.inputs.Increment }} --ci ${{ github.event.inputs.DryRun }}
+        if: inputs.Release == 'next'
+        run: pnpm run release-it --increment ${{ inputs.Increment }} --ci ${{ inputs.DryRun }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add link to npm
-        if: github.event.inputs.DryRun == ' '
+        if: inputs.DryRun == ' '
         run: |
           echo "[@signed/prettier-config](https://www.npmjs.com/package/@signed/prettier-config?activeTab=versions)" >> $GITHUB_STEP_SUMMARY          
