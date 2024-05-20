@@ -4,6 +4,9 @@ name: ManualRelease
 concurrency:
   group: ${{ github.workflow }} # only run a single release job at a time
 
+permissions:
+  contents: write # allow to push the updated package.json
+
 defaults:
   run:
     working-directory: prettier-config
