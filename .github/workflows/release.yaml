@@ -84,3 +84,8 @@ jobs:
         run: pnpm run release-it --increment ${{ github.event.inputs.Increment }} --ci ${{ github.event.inputs.DryRun }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add link to npm
+        if: github.event.inputs.DryRun != ''
+        run: |
+          echo "[@signed/prettier-config](https://www.npmjs.com/package/@signed/prettier-config?activeTab=versions)" >> $GITHUB_STEP_SUMMARY          
