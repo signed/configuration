@@ -6,15 +6,33 @@
 
 **Install**:
 
-```bash
-$ yarn add --dev @signed/prettier-config
+```shell
+pnpm add -D @signed/prettier-config
 ```
+
+## Use as-is
 
 **Edit `package.json`**:
 
-```jsonc
+```
 {
   // ...
   "prettier": "@signed/prettier-config"
 }
+```
+
+## Use as base configuration
+
+To add e.g. the prettier tailwind plugin create `prettier.config.mjs`
+as [local prettier configuration](https://prettier.io/docs/en/configuration.html) with
+
+```javascript
+import signed from '@signed/prettier-config'
+
+const config = {
+    ...signed,
+    plugins: ['prettier-plugin-tailwindcss'],
+}
+
+export default config
 ```
