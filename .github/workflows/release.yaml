@@ -6,9 +6,10 @@ concurrency:
 permissions:
   contents: write # allow to push the updated package.json
 
-run-name: Release ${{ inputs.Release }} as ${{ inputs.Increment }} (${{ inputs.DryRun }})
+run-name: ${{ inputs.DryRun && 'Dry-Run' || 'Publish release' }} ${{ inputs.Release }} as ${{ inputs.Increment }}
+
 env:
-  DRY_RUN_ARGUMENTS: ${{ github.ref == 'refs/heads/main' && 'value_for_main_branch' || 'value_for_other_branches' }}
+  MAYBE_DRY_RUN_ARGUMENTS: ${{ inputs.DryRun && '--dry-run --release-version' || '' }}
 
 defaults:
   run:
@@ -19,8 +20,8 @@ on:
       Release:
         description: 'Release'
         required: true
-        default: 'next'
         type: choice
+        default: 'next'
         options:
           - next
           - start-beta
@@ -28,8 +29,8 @@ on:
       Increment:
         description: 'Semver Increment'
         required: true
-        default: 'minor'
         type: choice
+        default: 'minor'
         options:
           - minor
           - patch
@@ -37,11 +38,8 @@ on:
       DryRun:
         description: 'Dry Run'
         required: true
-        default: '--dry-run --release-version'
-        type: choice
-        options:
-          - ' '
-          - '--dry-run --release-version'
+        type: boolean
+        default: true
 
 jobs:
   Release:
@@ -71,23 +69,23 @@ jobs:
 
       - name: Start Beta-Release
         if: inputs.Release == 'start-beta'
-        run: pnpm run release-it ${{ inputs.Increment }} --preRelease=beta --ci ${{ inputs.DryRun }}
+        run: pnpm run release-it ${{ inputs.Increment }} --preRelease=beta --ci ${{ env.MAYBE_DRY_RUN_ARGUMENTS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Continue Beta-Release
         if: inputs.Release == 'continue-beta'
-        run: pnpm run release-it --preRelease --ci ${{ inputs.DryRun }}
+        run: pnpm run release-it --preRelease --ci ${{ env.MAYBE_DRY_RUN_ARGUMENTS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Next Release
         if: inputs.Release == 'next'
-        run: pnpm run release-it --increment ${{ inputs.Increment }} --ci ${{ inputs.DryRun }}
+        run: pnpm run release-it --increment ${{ inputs.Increment }} --ci ${{ env.MAYBE_DRY_RUN_ARGUMENTS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add link to npm
-        if: inputs.DryRun == ' '
+        if: ${{ ! inputs.DryRun }}
         run: |
           echo "[@signed/prettier-config](https://www.npmjs.com/package/@signed/prettier-config?activeTab=versions)" >> $GITHUB_STEP_SUMMARY          
