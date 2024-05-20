@@ -28,6 +28,14 @@ on:
           - minor
           - patch
           - major
+      DryRun:
+        description: 'Dry Run'
+        required: true
+        default: ''
+        type: choice
+        options:
+          - ''
+          - '--dry-run --release-version'
 
 jobs:
   Release:
@@ -57,18 +65,18 @@ jobs:
 
       - name: Start Beta-Release
         if: github.event.inputs.Release == 'start-beta'
-        run: pnpm run release-it ${{ github.event.inputs.Increment }} --preRelease=beta --ci
+        run: pnpm run release-it ${{ github.event.inputs.Increment }} --preRelease=beta --ci ${{ github.event.inputs.DryRun }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Continue Beta-Release
         if: github.event.inputs.Release == 'continue-beta'
-        run: pnpm run release-it --preRelease --ci
+        run: pnpm run release-it --preRelease --ci ${{ github.event.inputs.DryRun }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Next Release
         if: github.event.inputs.Release == 'next'
-        run: pnpm run release-it --increment ${{ github.event.inputs.Increment }} --ci
+        run: pnpm run release-it --increment ${{ github.event.inputs.Increment }} --ci ${{ github.event.inputs.DryRun }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
